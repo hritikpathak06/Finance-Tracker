@@ -48,9 +48,11 @@ const Sidebar = () => {
   return (
     <div className="w-full h-screen bg-card border-r flex flex-col bg-gray-700">
       <div className="p-6 border-b">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
+    <Link href={"/"}>
+    <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
           FinanceTracker
         </h1>
+    </Link>
       </div>
 
       <Sheet open={open} onOpenChange={setOpen} >

@@ -10,15 +10,14 @@ import {
   TrendingUp,
   ArrowRight,
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
-
   const router = useRouter();
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
       <header className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/5 z-0" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16 relative z-10">
@@ -34,8 +33,10 @@ export default function Home() {
               our comprehensive personal finance management platform.
             </p>
             <div className="mt-10 flex gap-4 justify-center">
-              <Button size="lg" className="gap-2"
-              onClick={()=> router.push("/dashboard")}
+              <Button
+                size="lg"
+                className="gap-2"
+                onClick={() => router.push("/dashboard")}
               >
                 Get Started Free <ArrowRight className="w-4 h-4" />
               </Button>
@@ -47,7 +48,6 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Features Section */}
       <section className="py-20 bg-muted/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -95,7 +95,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-20 bg-primary text-primary-foreground">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold mb-8">
@@ -105,13 +104,14 @@ export default function Home() {
             Join thousands of users who have already transformed their financial
             lives with our platform.
           </p>
-          <Button size="lg" variant="secondary" className="gap-2">
-            Create Free Account <ArrowRight className="w-4 h-4" />
-          </Button>
+          <Link href={"/dashboard"}>
+            <Button size="lg" variant="secondary" className="gap-2">
+              Get started <ArrowRight className="w-4 h-4" />
+            </Button>
+          </Link>
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-background py-12 border-t">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
