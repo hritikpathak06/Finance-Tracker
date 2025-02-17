@@ -1,5 +1,6 @@
 import { connect_db } from "@/configs/db";
 import Budget from "@/models/budget.model";
+import Transaction from "@/models/transacton.model";
 import { NextRequest, NextResponse } from "next/server";
 
 connect_db();
@@ -68,3 +69,32 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ msg: "Internal Server Error" }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    // Get the budget_id from the query parameters
+    const budget_id = req.nextUrl.searchParams.get("budget_id");
+
+    // Find the budget document by its ID
+    const budget = await Budget.findById(budget_id);
+
+    if (!budget) {
+      return NextResponse.json({ msg: "Budget not found" }, { status: 404 });
+    }
+
+    const { month, year, categoryId } = budget;
+    await Transaction.deleteMany({ month, year, categoryId });
+
+    // Delete the budget
+    await Budget.findByIdAndDelete(budget_id);
+
+    return NextResponse.json(
+      { msg: "Budget and related transaction deleted successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting budget and transaction:", error);
+    return NextResponse.json({ msg: "Internal Server Error" }, { status: 500 });
+  }
+}
+

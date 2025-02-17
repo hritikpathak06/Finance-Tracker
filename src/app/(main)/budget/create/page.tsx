@@ -93,7 +93,7 @@ const AddDialogBox = () => {
           </div>
 
           {/* Month Selection */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 w-full">
             <Label className="text-lg font-medium">Month</Label>
             <Controller
               name="month"
@@ -102,11 +102,9 @@ const AddDialogBox = () => {
               render={({ field }) => (
                 <select
                   {...field}
-                  className="w-[180px] p-3 border-2 rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  className="w-full p-3 border-2 rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 >
-                  <option value="" disabled>
-                    Select Month
-                  </option>
+                  <option value="">Select Month</option>
                   <option value="jan">January</option>
                   <option value="feb">February</option>
                   <option value="mar">March</option>
@@ -132,6 +130,8 @@ const AddDialogBox = () => {
               type="number"
               placeholder="Enter the year"
               className="p-3 border-2 rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              defaultValue={2025}
+              readOnly
               {...register("year", { required: "Year is required" })}
             />
             {errors.year && <p className="text-red-500 text-sm">Required</p>}
@@ -142,7 +142,7 @@ const AddDialogBox = () => {
             type="submit"
             className="w-full bg-indigo-600 text-white p-3 rounded-md hover:bg-indigo-700 focus:outline-none"
           >
-            Add Budget
+            Double tap to Add Budget
           </Button>
         </form>
       </div>

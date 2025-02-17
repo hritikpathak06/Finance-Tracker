@@ -45,7 +45,6 @@ interface Column {
 }
 
 const Page = () => {
-  const [categories, setCategories] = useState<any[]>([]);
 
   const [budgets, setBudgets] = useState<BudgetTypes[]>([]);
   const [totalPages, setTotalPages] = useState<any>();
@@ -105,8 +104,7 @@ const Page = () => {
       actualSpent: budget.actualSpent,
       actions: (
         <div className="flex gap-2">
-          <EditDialogBox setCategories={setCategories} row={budget} />
-          <DeleteDialogBox setCategories={setCategories} row={budget} />
+          <DeleteDialogBox setBudget={setBudgets} row={budget} />
         </div>
       ),
     }));
@@ -117,8 +115,8 @@ const Page = () => {
       <div className="p-4">
         <div className="flex md:flex-row flex-col gap-5 items-center justify-between p-4">
           <h1 className="text-3xl font-bold">Budget</h1>
-          <Button onClick={()=> router.push("/budget/create")}>
-            <PlusIcon className=" h-4 w-4"/>
+          <Button onClick={() => router.push("/budget/create")}>
+            <PlusIcon className=" h-4 w-4" />
             Add New
           </Button>
         </div>
@@ -139,250 +137,45 @@ const Page = () => {
 
 export default Page;
 
-const AddDialogBox = ({ setCategories }: any) => {
-  const [open, setOpen] = useState<boolean>(false);
-  const [allCategories, setAllCategories] = useState<any[]>([]);
-
-  useEffect(() => {
-    (async () => {
-      const res = await get_all_categories();
-      setAllCategories(res);
-    })();
-  }, []);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
-
-  const onSubmit = async (values: any) => {
-    try {
-      // const { data } = await axios.post("/api/category", values);
-      // setCategories((prev: any) => [data.new_category, ...prev]);
-      // toast.success(data?.msg);
-      // reset();
-      // setOpen(false);
-
-      console.log("Values==>> ",values)
-    } catch (error: any) {
-      toast.error(error?.response?.data?.msg || "An error occurred");
-    }
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button onClick={() => setOpen(true)}>
-          <PlusIcon className="h-4 w-4" />
-          Add New
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className="mb-4">Add New Budget</DialogTitle>
-          <DialogDescription>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="flex flex-col gap-3">
-                <Label>Select Category</Label>
-                <Select {...register("month", { required: true })}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select Month" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {allCategories.map((c,idx) => {
-                      return(
-                        <>
-                            <SelectItem key={idx} value={c._id}>{c.name}</SelectItem>
-                        </>
-                      )
-                    })}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Adding Budget Amount Field */}
-              <div className="flex flex-col gap-2">
-                <Label>Budget Amount</Label>
-                <Input
-                  type="number"
-                  placeholder="Enter the budget amount"
-                  {...register("budgetAmount", { required: true })}
-                />
-                {errors.budgetAmount && (
-                  <p className="text-red-500 text-sm">This field is required</p>
-                )}
-              </div>
-
-              {/* Adding Month Field */}
-              <div className="flex flex-col gap-2">
-                <Label>Month</Label>
-                <Select {...register("month", { required: true })}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select Month" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {/* Predefined months in "YYYY-MM" format */}
-                    <SelectItem value="2025-01">January 2025</SelectItem>
-                    <SelectItem value="2025-02">February 2025</SelectItem>
-                    <SelectItem value="2025-03">March 2025</SelectItem>
-                    <SelectItem value="2025-04">April 2025</SelectItem>
-                    <SelectItem value="2025-05">May 2025</SelectItem>
-                    <SelectItem value="2025-06">June 2025</SelectItem>
-                    <SelectItem value="2025-07">July 2025</SelectItem>
-                    <SelectItem value="2025-08">August 2025</SelectItem>
-                    <SelectItem value="2025-09">September 2025</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.month && (
-                  <p className="text-red-500 text-sm">This field is required</p>
-                )}
-              </div>
-
-              {/* Adding Year Field */}
-              <div className="flex flex-col gap-2">
-                <Label>Year</Label>
-                <Input
-                  type="number"
-                  placeholder="Enter the year"
-                  {...register("year", { required: true })}
-                />
-                {errors.year && (
-                  <p className="text-red-500 text-sm">This field is required</p>
-                )}
-              </div>
-
-              <Button type="submit" className="w-full">
-                Add
-              </Button>
-            </form>
-          </DialogDescription>
-        </DialogHeader>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-const EditDialogBox = ({ setCategories, row }: any) => {
+const DeleteDialogBox = ({ setBudgets, row }: any) => {
   const [open, setOpen] = useState<boolean>(false);
 
-  //   console.log("Row==>> ", row);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
-
-  const onSubmit = async (values: any) => {
+  const handleDeleteClick = async () => {
     try {
-      const { data } = await axios.put(
-        `/api/category?category_id=${row?._id || ""}`,
-        values
-      );
-      setCategories((prev: any) =>
-        prev.map((c: any) => (c._id === row?._id ? { ...c, ...values } : c))
-      );
-      toast.success(data?.msg);
-      reset();
+      const { data } = await axios.delete(`/api/budget?budget_id=${row?._id}`);
+      setBudgets((prev: any) => prev.filter((c: any) => c._id !== row?._id));
+      toast.success(data?.msg || "Budget deleted successfully");
       setOpen(false);
     } catch (error: any) {
-      toast.error(error?.response?.data?.msg || "An error occurred");
-    }
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
-          <EditIcon className=" h-6 w-6" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className=" mb-4">Edit Category</DialogTitle>
-          <DialogDescription>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className=" flex flex-col gap-2">
-                <Label>Category Name</Label>
-                <Input
-                  type="text"
-                  className=" text-black"
-                  placeholder="Enter the category name"
-                  {...register("name", { required: true })}
-                  defaultValue={row?.name || ""}
-                />
-                {errors.name && (
-                  <p className="text-red-500 text-sm">This field is required</p>
-                )}
-              </div>
-              <Button type="submit" className=" w-full">
-                Submit
-              </Button>
-            </form>
-          </DialogDescription>
-        </DialogHeader>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-const DeleteDialogBox = ({ setCategories, row }: any) => {
-  const [open, setOpen] = useState<boolean>(false);
-  const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
-
-  const handleDeleteClick = () => {
-    setShowConfirmation(true);
-  };
-
-  const handleCancel = () => {
-    setOpen(false);
-  };
-
-  const handleConfirmDelete = async () => {
-    try {
-      const { data } = await axios.delete(
-        `/api/category?category_id=${row?._id}`
-      );
-      setCategories((prev: any) => prev.filter((c: any) => c._id !== row?._id));
-      toast.success(data?.msg || "Category deleted successfully");
+      const errorMessage =
+        error?.response?.data?.msg || "Failed to delete the budget";
+      toast.error(errorMessage);
       setOpen(false);
-    } catch (error: any) {
-      toast.error(error?.response?.data?.msg || "Error deleting category");
     }
-    setShowConfirmation(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="destructive" size="sm" onClick={handleDeleteClick}>
+        <Button variant="destructive" size="sm" onClick={() => setOpen(true)}>
           <TrashIcon className="h-6 w-6" />
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="mb-4">
-            {showConfirmation ? "Confirm Deletion" : "Delete Category"}
-          </DialogTitle>
+          <DialogTitle className="mb-4">Confirm Deletion</DialogTitle>
           <DialogDescription>
-            {showConfirmation ? (
-              <div>
-                <p className="mb-4">
-                  Are you sure you want to delete this category?
-                </p>
-                <div className="flex gap-4">
-                  <Button variant="destructive" onClick={handleConfirmDelete}>
-                    Yes
-                  </Button>
-                  <Button variant="outline" onClick={handleCancel}>
-                    No
-                  </Button>
-                </div>
-              </div>
-            ) : null}
+            <p className="mb-4">
+              Are you sure you want to delete this category?
+            </p>
+            <div className="flex gap-4">
+              <Button variant="destructive" onClick={handleDeleteClick}>
+                Yes
+              </Button>
+              <Button variant="outline" onClick={() => setOpen(false)}>
+                No
+              </Button>
+            </div>
           </DialogDescription>
         </DialogHeader>
       </DialogContent>

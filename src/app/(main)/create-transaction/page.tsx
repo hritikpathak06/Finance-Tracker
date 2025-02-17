@@ -95,7 +95,7 @@ const TransactionForm = () => {
               render={({ field }) => (
                 <select
                   {...field}
-                  className="w-[180px] p-3 border-2 rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  className="w-full p-3 border-2 rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 >
                   <option value="">Select Month</option>
                   <option value="jan">January</option>
@@ -123,6 +123,8 @@ const TransactionForm = () => {
               type="number"
               placeholder="Enter year"
               {...register("year", { required: "Year is required" })}
+              defaultValue={2025}
+              readOnly
             />
             {errors.year && <p className="text-red-500 text-sm">Required</p>}
           </div>
