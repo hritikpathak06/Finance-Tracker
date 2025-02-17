@@ -2,6 +2,9 @@
 
 A comprehensive finance tracker app built with **Next.js**, **MongoDB**, and **Node.js** to help you manage your expenses, track your income, and visualize your budget and spending habits. The app allows users to add, update, and delete transactions, set budgets for different categories, and get insights into their financial activity over time.
 
+##Requirement
+Inorder to use this app on your local machine you will need to have mongo uri.Add That mongo uri .env file name DB_URI = "Your Uri".
+
 ![Home Page](public/fhome.png)
 ![Home Page](public/fdash.png)
 ![Home Page](public/ft.png)
@@ -69,11 +72,11 @@ Before you begin, make sure you have the following installed:
       Open your terminal and run the following command:
 
    ```bash
-  npm install
+   npm install
 
 4. **Run the app**
 
      Open your terminal and run the following command:
 
    ```bash
-  npm run dev
+   npm run dev
