@@ -58,3 +58,22 @@ Before you begin, make sure you have the following installed:
 
    ```bash
    git clone https://github.com/your-username/finance-tracker.git
+2. ** go to file path:**
+   Go to terminal
+
+   ```bash
+   cd finace-tracker
+
+3. **Install the dependency**
+
+      Open your terminal and run the following command:
+
+   ```bash
+  npm install
+
+4. **Run the app**
+
+     Open your terminal and run the following command:
+
+   ```bash
+  npm run dev
