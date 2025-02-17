@@ -92,7 +92,7 @@ const Page = () => {
   return (
     <>
       <div className="p-4">
-        <div className="flex items-center justify-between p-4">
+        <div className="flex md:flex-row flex-col gap-5 items-center justify-between p-4">
           <h1 className="text-3xl font-bold">Categories</h1>
           <AddDialogBox setCategories={setCategories} />
         </div>

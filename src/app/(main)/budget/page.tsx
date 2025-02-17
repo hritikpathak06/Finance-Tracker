@@ -115,7 +115,7 @@ const Page = () => {
   return (
     <>
       <div className="p-4">
-        <div className="flex items-center justify-between p-4">
+        <div className="flex md:flex-row flex-col gap-5 items-center justify-between p-4">
           <h1 className="text-3xl font-bold">Budget</h1>
           <Button onClick={()=> router.push("/budget/create")}>
             <PlusIcon className=" h-4 w-4"/>
