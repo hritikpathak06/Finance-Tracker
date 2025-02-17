@@ -90,3 +90,113 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
+export async function PUT(req: NextRequest) {
+  try {
+    const { transactionId, amount, month, year, categoryId } = await req.json();
+
+    if (!transactionId || !amount || !month || !year || !categoryId) {
+      return NextResponse.json(
+        { msg: "All fields are required" },
+        { status: 400 }
+      );
+    }
+
+    const transaction = await Transaction.findById(transactionId);
+    if (!transaction) {
+      return NextResponse.json(
+        { msg: "Transaction not found" },
+        { status: 404 }
+      );
+    }
+
+    const budget = await Budget.findOne({ month, year, categoryId });
+    if (!budget) {
+      return NextResponse.json(
+        { msg: "No budget found for this month and category" },
+        { status: 404 }
+      );
+    }
+
+    budget.actualSpent = Number(budget.actualSpent || 0) - transaction.amount;
+
+    // Update the transaction
+    transaction.amount = amount;
+    transaction.month = month;
+    transaction.year = year;
+    transaction.categoryId = categoryId;
+
+    // Update the budget by adding the new amount
+    budget.actualSpent = (budget.actualSpent || 0) + amount;
+
+    // Save the updated budget and transaction
+    await budget.save();
+    await transaction.save();
+
+    return NextResponse.json(
+      {
+        msg: "Transaction Updated Successfully",
+        updatedTransaction: transaction,
+        updatedBudget: budget,
+      },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    console.error("Error updating transaction:", error);
+    return NextResponse.json(
+      { msg: `Internal Server Error ${error.message}` },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const transactionId = req.nextUrl.searchParams.get("transaction_id");
+
+    if (!transactionId) {
+      return NextResponse.json(
+        { msg: "Transaction ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const transaction = await Transaction.findById(transactionId);
+    if (!transaction) {
+      return NextResponse.json(
+        { msg: "Transaction not found" },
+        { status: 404 }
+      );
+    }
+
+    const budget = await Budget.findOne({
+      month: transaction.month,
+      year: transaction.year,
+      categoryId: transaction.categoryId,
+    });
+    if (!budget) {
+      return NextResponse.json(
+        { msg: "No budget found for this month and category" },
+        { status: 404 }
+      );
+    }
+
+    budget.actualSpent = (budget.actualSpent || 0) - transaction.amount;
+
+    await budget.save();
+
+    await Transaction.deleteOne({ _id: transactionId });
+
+    return NextResponse.json(
+      {
+        msg: "Transaction Deleted Successfully",
+        updatedBudget: budget,
+      },
+      { status: 200 }
+    );
+  } catch (error:any) {
+    console.error("Error deleting transaction:", error);
+    return NextResponse.json({ msg: `Internal Server Error ${error.message}` }, { status: 500 });
+  }
+}
+

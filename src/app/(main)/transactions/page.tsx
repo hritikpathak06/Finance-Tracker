@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import Pagination from "@/components/shared/Pagination";
 import {
   Select,
@@ -44,10 +44,7 @@ interface Column {
 }
 
 const Page = () => {
-  const [categories, setCategories] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<TransactionTypes[]>([]);
-
-  const [budgets, setBudgets] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState<any>();
 
   const router = useRouter();
@@ -60,15 +57,13 @@ const Page = () => {
       if (page > 1) {
         next_query = `?page=${page}`;
       }
-      const { data } = await axios.get(`/api/transaction`);
+      const { data } = await axios.get(`/api/transaction${next_query}`);
       setTransactions(data?.transactions);
       setTotalPages(data?.details.total_pages);
     } catch (error) {
       toast.error("Error fetching data");
     }
   };
-
-  console.log("transactions==>> ", transactions);
 
   useEffect(() => {
     fetchCategories(page);
@@ -105,8 +100,11 @@ const Page = () => {
       amount: transaction.amount,
       actions: (
         <div className="flex gap-2">
-          <EditDialogBox setCategories={setCategories} row={transaction} />
-          <DeleteDialogBox setCategories={setCategories} row={transaction} />
+          <EditDialogBox setTransactions={setTransactions} row={transaction} />
+          <DeleteDialogBox
+            setTransactions={setTransactions}
+            row={transaction}
+          />
         </div>
       ),
     }));
@@ -117,6 +115,10 @@ const Page = () => {
       <div className="p-4">
         <div className="flex items-center justify-between p-4">
           <h1 className="text-3xl font-bold">Transactions</h1>
+          <Button onClick={() => router.push("/create-transaction")}>
+            <PlusIcon className=" h-4 w-4" />
+            Add New
+          </Button>
         </div>
 
         <div className="mt-4">
@@ -135,9 +137,10 @@ const Page = () => {
 
 export default Page;
 
-const AddDialogBox = ({ setCategories }: any) => {
+const EditDialogBox = ({ setTransactions, row }: any) => {
   const [open, setOpen] = useState<boolean>(false);
   const [allCategories, setAllCategories] = useState<any[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     (async () => {
@@ -149,145 +152,28 @@ const AddDialogBox = ({ setCategories }: any) => {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
     reset,
   } = useForm();
 
   const onSubmit = async (values: any) => {
     try {
-      // const { data } = await axios.post("/api/category", values);
-      // setCategories((prev: any) => [data.new_category, ...prev]);
-      // toast.success(data?.msg);
-      // reset();
-      // setOpen(false);
+      const { data } = await axios.put(`/api/transaction`, {
+        transactionId: row?._id,
+        amount: values.amount,
+        month: values.month,
+        year: values.year,
+        categoryId: values.categoryId,
+      });
 
-      console.log("Values==>> ", values);
-    } catch (error: any) {
-      toast.error(error?.response?.data?.msg || "An error occurred");
-    }
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button onClick={() => setOpen(true)}>
-          <PlusIcon className="h-4 w-4" />
-          Add New
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className="mb-4">Add New Budget</DialogTitle>
-          <DialogDescription>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="flex flex-col gap-3">
-                <Label>Select Category</Label>
-                <Select {...register("month", { required: true })}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select Month" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {allCategories.map((c, idx) => {
-                      return (
-                        <>
-                          <SelectItem key={idx} value={c._id}>
-                            {c.name}
-                          </SelectItem>
-                        </>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Adding Budget Amount Field */}
-              <div className="flex flex-col gap-2">
-                <Label>Budget Amount</Label>
-                <Input
-                  type="number"
-                  placeholder="Enter the budget amount"
-                  {...register("budgetAmount", { required: true })}
-                />
-                {errors.budgetAmount && (
-                  <p className="text-red-500 text-sm">This field is required</p>
-                )}
-              </div>
-
-              {/* Adding Month Field */}
-              <div className="flex flex-col gap-2">
-                <Label>Month</Label>
-                <Select {...register("month", { required: true })}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select Month" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {/* Predefined months in "YYYY-MM" format */}
-                    <SelectItem value="2025-01">January 2025</SelectItem>
-                    <SelectItem value="2025-02">February 2025</SelectItem>
-                    <SelectItem value="2025-03">March 2025</SelectItem>
-                    <SelectItem value="2025-04">April 2025</SelectItem>
-                    <SelectItem value="2025-05">May 2025</SelectItem>
-                    <SelectItem value="2025-06">June 2025</SelectItem>
-                    <SelectItem value="2025-07">July 2025</SelectItem>
-                    <SelectItem value="2025-08">August 2025</SelectItem>
-                    <SelectItem value="2025-09">September 2025</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.month && (
-                  <p className="text-red-500 text-sm">This field is required</p>
-                )}
-              </div>
-
-              {/* Adding Year Field */}
-              <div className="flex flex-col gap-2">
-                <Label>Year</Label>
-                <Input
-                  type="number"
-                  placeholder="Enter the year"
-                  {...register("year", { required: true })}
-                />
-                {errors.year && (
-                  <p className="text-red-500 text-sm">This field is required</p>
-                )}
-              </div>
-
-              <Button type="submit" className="w-full">
-                Add
-              </Button>
-            </form>
-          </DialogDescription>
-        </DialogHeader>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-const EditDialogBox = ({ setCategories, row }: any) => {
-  const [open, setOpen] = useState<boolean>(false);
-
-  //   console.log("Row==>> ", row);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
-
-  const onSubmit = async (values: any) => {
-    try {
-      const { data } = await axios.put(
-        `/api/category?category_id=${row?._id || ""}`,
-        values
-      );
-      setCategories((prev: any) =>
-        prev.map((c: any) => (c._id === row?._id ? { ...c, ...values } : c))
-      );
       toast.success(data?.msg);
+
+      window.location.reload();
       reset();
       setOpen(false);
     } catch (error: any) {
-      toast.error(error?.response?.data?.msg || "An error occurred");
+      toast.error(error?.response?.data?.msg);
     }
   };
 
@@ -300,23 +186,97 @@ const EditDialogBox = ({ setCategories, row }: any) => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className=" mb-4">Edit Category</DialogTitle>
+          <DialogTitle className=" mb-4">Edit Transaction</DialogTitle>
           <DialogDescription>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className=" flex flex-col gap-2">
-                <Label>Category Name</Label>
+              {/* Amount Field */}
+              <div className="flex flex-col gap-2">
+                <Label>Amount</Label>
                 <Input
-                  type="text"
-                  className=" text-black"
-                  placeholder="Enter the category name"
-                  {...register("name", { required: true })}
-                  defaultValue={row?.name || ""}
+                  type="number"
+                  className="text-black"
+                  placeholder="Enter the transaction amount"
+                  {...register("amount", { required: true })}
+                  defaultValue={row?.amount || ""}
                 />
-                {errors.name && (
+                {errors.amount && (
                   <p className="text-red-500 text-sm">This field is required</p>
                 )}
               </div>
-              <Button type="submit" className=" w-full">
+
+              {/* Month Field */}
+              <div className="flex flex-col gap-2">
+                <Label>Month</Label>
+                <select
+                  {...register("month", { required: true })}
+                  defaultValue={row?.month || ""}
+                  className="w-full p-3 border-2 rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                >
+                  <option value="" disabled>
+                    Select Month
+                  </option>
+                  <option value="jan">January</option>
+                  <option value="feb">February</option>
+                  <option value="mar">March</option>
+                  <option value="apr">April</option>
+                  <option value="may">May</option>
+                  <option value="jun">June</option>
+                  <option value="jul">July</option>
+                  <option value="aug">August</option>
+                  <option value="sep">September</option>
+                  <option value="oct">October</option>
+                  <option value="nov">November</option>
+                  <option value="dec">December</option>
+                </select>
+                {errors.month && (
+                  <p className="text-red-500 text-sm">This field is required</p>
+                )}
+              </div>
+
+              {/* Year Field */}
+              <div className="flex flex-col gap-2">
+                <Label>Year</Label>
+                <Input
+                  type="number"
+                  className="text-black"
+                  placeholder="Enter the transaction year"
+                  {...register("year", { required: true })}
+                  defaultValue={row?.year || ""}
+                />
+                {errors.year && (
+                  <p className="text-red-500 text-sm">This field is required</p>
+                )}
+              </div>
+
+              {/* Category Field */}
+              <div className="flex flex-col gap-2">
+                <Label className="text-lg font-medium">Select Category</Label>
+                <Controller
+                  name="categoryId"
+                  control={control}
+                  rules={{ required: "Category is required" }}
+                  defaultValue={row?.categoryId?._id || ""}
+                  render={({ field }) => (
+                    <select
+                      {...field}
+                      className="w-full p-3 border-2 rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                    >
+                      <option value="">Select Category</option>
+                      {allCategories.map((c, idx) => (
+                        <option key={idx} value={c._id}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                />
+                {errors.categoryId && (
+                  <p className="text-red-500 text-sm">Required</p>
+                )}
+              </div>
+
+              {/* Submit Button */}
+              <Button type="submit" className="w-full">
                 Submit
               </Button>
             </form>
@@ -327,7 +287,7 @@ const EditDialogBox = ({ setCategories, row }: any) => {
   );
 };
 
-const DeleteDialogBox = ({ setCategories, row }: any) => {
+const DeleteDialogBox = ({ setTransactions, row }: any) => {
   const [open, setOpen] = useState<boolean>(false);
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
 
@@ -342,9 +302,11 @@ const DeleteDialogBox = ({ setCategories, row }: any) => {
   const handleConfirmDelete = async () => {
     try {
       const { data } = await axios.delete(
-        `/api/category?category_id=${row?._id}`
+        `/api/transaction?transaction_id=${row?._id}`
       );
-      setCategories((prev: any) => prev.filter((c: any) => c._id !== row?._id));
+      setTransactions((prev: any) =>
+        prev.filter((c: any) => c._id !== row?._id)
+      );
       toast.success(data?.msg || "Category deleted successfully");
       setOpen(false);
     } catch (error: any) {
