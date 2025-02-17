@@ -45,7 +45,6 @@ interface Column {
 }
 
 const Page = () => {
-
   const [budgets, setBudgets] = useState<BudgetTypes[]>([]);
   const [totalPages, setTotalPages] = useState<any>();
 
@@ -59,7 +58,7 @@ const Page = () => {
       if (page > 1) {
         next_query = `?page=${page}`;
       }
-      const { data } = await axios.get(`/api/budget`);
+      const { data } = await axios.get(`/api/budget${next_query}`);
       setBudgets(data?.budgets);
       setTotalPages(data?.details.total_pages);
     } catch (error) {

@@ -72,10 +72,8 @@ export async function GET(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
-    // Get the budget_id from the query parameters
     const budget_id = req.nextUrl.searchParams.get("budget_id");
 
-    // Find the budget document by its ID
     const budget = await Budget.findById(budget_id);
 
     if (!budget) {
@@ -85,7 +83,6 @@ export async function DELETE(req: NextRequest) {
     const { month, year, categoryId } = budget;
     await Transaction.deleteMany({ month, year, categoryId });
 
-    // Delete the budget
     await Budget.findByIdAndDelete(budget_id);
 
     return NextResponse.json(

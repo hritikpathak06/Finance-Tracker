@@ -9,7 +9,6 @@ export async function POST(req: NextRequest) {
   try {
     const { amount, month, year, categoryId } = await req.json();
 
-    // Check if all required fields are provided
     if (!amount || !month || !year || !categoryId) {
       return NextResponse.json(
         { msg: "All fields are required" },
@@ -17,11 +16,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Find the budget for the specific month, year, and category
     const budget = await Budget.findOne({ month, year, categoryId });
 
     if (budget) {
-      // Ensure actualSpent is a number and add the amount to it
       budget.actualSpent = (Number(budget.actualSpent) || 0) + Number(amount);
       await budget.save();
     } else {
@@ -31,7 +28,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Create a new transaction
     const newTransaction = new Transaction({
       amount,
       month,
@@ -39,10 +35,8 @@ export async function POST(req: NextRequest) {
       categoryId,
     });
 
-    // Save the transaction
     await newTransaction.save();
 
-    // Respond with success
     return NextResponse.json(
       {
         msg: "Transaction Created Successfully",
@@ -56,7 +50,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ msg: "Internal Server Error" }, { status: 500 });
   }
 }
-
 
 export async function GET(req: NextRequest) {
   try {
@@ -127,16 +120,13 @@ export async function PUT(req: NextRequest) {
 
     budget.actualSpent = Number(budget.actualSpent || 0) - transaction.amount;
 
-    // Update the transaction
     transaction.amount = amount;
     transaction.month = month;
     transaction.year = year;
     transaction.categoryId = categoryId;
 
-    // Update the budget by adding the new amount
     budget.actualSpent = (Number(budget.actualSpent) || 0) + Number(amount);
 
-    // Save the updated budget and transaction
     await budget.save();
     await transaction.save();
 
@@ -201,9 +191,11 @@ export async function DELETE(req: NextRequest) {
       },
       { status: 200 }
     );
-  } catch (error:any) {
+  } catch (error: any) {
     console.error("Error deleting transaction:", error);
-    return NextResponse.json({ msg: `Internal Server Error ${error.message}` }, { status: 500 });
+    return NextResponse.json(
+      { msg: `Internal Server Error ${error.message}` },
+      { status: 500 }
+    );
   }
 }
-

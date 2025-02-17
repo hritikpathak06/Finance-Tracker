@@ -45,7 +45,7 @@ const AddDialogBox = () => {
 
   return (
     <div className="h-max flex items-center justify-center bg-gradient-to-r">
-      <div className="p-8 bg-white w-full max-w-lg space-y-6">
+      <div className="p-8 bg-white w-full max-w-lg space-y-6 shadow-lg mt-3">
         <h2 className="text-3xl font-semibold text-center text-indigo-600">
           Add New Budget
         </h2>

@@ -43,8 +43,8 @@ const TransactionForm = () => {
   };
 
   return (
-    <div className="h-max flex items-center justify-center bg-gradient-to-r">
-      <div className="p-8 bg-white w-full max-w-lg space-y-6">
+    <div className="h-max flex items-center justify-center bg-gradient-to-r w-full">
+      <div className="p-8 bg-white w-full max-w-lg space-y-6 shadow-md mt-3">
         <h2 className="text-3xl font-semibold text-center text-indigo-600">
           Add Transaction
         </h2>
@@ -74,7 +74,6 @@ const TransactionForm = () => {
             )}
           </div>
 
-          {/* Amount Field */}
           <div className="flex flex-col gap-2">
             <Label className="text-lg font-medium">Amount</Label>
             <Input
@@ -85,7 +84,6 @@ const TransactionForm = () => {
             {errors.amount && <p className="text-red-500 text-sm">Required</p>}
           </div>
 
-          {/* Month Selection */}
           <div className="flex flex-col gap-2">
             <Label className="text-lg font-medium">Month</Label>
             <Controller
@@ -116,7 +114,6 @@ const TransactionForm = () => {
             {errors.month && <p className="text-red-500 text-sm">Required</p>}
           </div>
 
-          {/* Year Field */}
           <div className="flex flex-col gap-2">
             <Label className="text-lg font-medium">Year</Label>
             <Input
@@ -129,9 +126,6 @@ const TransactionForm = () => {
             {errors.year && <p className="text-red-500 text-sm">Required</p>}
           </div>
 
-          {/* Category Selection */}
-
-          {/* Submit Button */}
           <Button
             type="submit"
             className="w-full bg-indigo-600 text-white p-3 rounded-md hover:bg-indigo-700 focus:outline-none"
