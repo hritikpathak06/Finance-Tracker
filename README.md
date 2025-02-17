@@ -2,6 +2,9 @@
 
 A comprehensive finance tracker app built with **Next.js**, **MongoDB**, and **Node.js** to help you manage your expenses, track your income, and visualize your budget and spending habits. The app allows users to add, update, and delete transactions, set budgets for different categories, and get insights into their financial activity over time.
 
+![Home Page](public/fhome.png)
+
+
 ## Table of Contents
 - [About](#about)
 - [Getting Started](#getting-started)
