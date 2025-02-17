@@ -1,17 +1,17 @@
 import mongoose from "mongoose";
 
-const budget_schema = new mongoose.Schema(
-  {
-    category: { type: String, required: true },
-    monthlyBudget: { type: Number, required: true },
-    userId: { type: String, required: true },
+const budgetSchema = new mongoose.Schema({
+  categoryId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+    required: true,
   },
-  {
-    timestamps: true,
-  }
-);
+  month: { type: String, required: true },  //YYYY
+  year: { type: Number, required: true },
+  budgetAmount: { type: Number, required: true },
+  actualSpent: { type: Number, default: 0 },
+});
 
-const Budget =
-  mongoose.models.Budget || mongoose.model("Budget", budget_schema);
+const Budget = mongoose.models.Budget || mongoose.model("Budget", budgetSchema);
 
 export default Budget;
