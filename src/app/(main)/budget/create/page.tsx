@@ -107,21 +107,22 @@ const AddDialogBox = () => {
                   <option value="" disabled>
                     Select Month
                   </option>
-                  <option value="2025-01">January 2025</option>
-                  <option value="2025-02">February 2025</option>
-                  <option value="2025-03">March 2025</option>
-                  <option value="2025-04">April 2025</option>
-                  <option value="2025-05">May 2025</option>
-                  <option value="2025-06">June 2025</option>
-                  <option value="2025-07">July 2025</option>
-                  <option value="2025-08">August 2025</option>
-                  <option value="2025-09">September 2025</option>
+                  <option value="jan">January</option>
+                  <option value="feb">February</option>
+                  <option value="mar">March</option>
+                  <option value="apr">April</option>
+                  <option value="may">May</option>
+                  <option value="jun">June</option>
+                  <option value="jul">July</option>
+                  <option value="aug">August</option>
+                  <option value="sep">September</option>
+                  <option value="oct">October</option>
+                  <option value="nov">November</option>
+                  <option value="dec">December</option>
                 </select>
               )}
             />
-            {errors.month && (
-              <p className="text-red-500 text-sm">Required</p>
-            )}
+            {errors.month && <p className="text-red-500 text-sm">Required</p>}
           </div>
 
           {/* Year Field */}
@@ -133,9 +134,7 @@ const AddDialogBox = () => {
               className="p-3 border-2 rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
               {...register("year", { required: "Year is required" })}
             />
-            {errors.year && (
-              <p className="text-red-500 text-sm">Required</p>
-            )}
+            {errors.year && <p className="text-red-500 text-sm">Required</p>}
           </div>
 
           {/* Submit Button */}

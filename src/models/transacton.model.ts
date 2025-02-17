@@ -2,20 +2,15 @@ import mongoose from "mongoose";
 
 const transcation_schema = new mongoose.Schema(
   {
-    user_name: {
-      type: String,
-      required: true,
-    },
     amount: {
       type: Number,
       required: true,
     },
-    date: {
-      type: Date,
-      required: true,
-    },
-    category: {
-      type: String,
+    month: { type: String, required: true },
+    year: { type: Number, required: true },
+    categoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
       required: true,
     },
   },
@@ -23,7 +18,7 @@ const transcation_schema = new mongoose.Schema(
 );
 
 const Transaction =
-  mongoose.models.Transactions ||
-  mongoose.model("Trasancation", transcation_schema);
+  mongoose.models.Transaction ||
+  mongoose.model("Transaction", transcation_schema);
 
 export default Transaction;
