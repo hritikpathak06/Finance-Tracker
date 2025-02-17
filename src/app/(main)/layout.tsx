@@ -2,6 +2,7 @@ import Navabar from "@/components/client/Navabar";
 import Sidebar from "@/components/client/Sidebar";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,16 +26,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <div className=" flex min-h-[100vh]">
-          <div className=" w-[15%] ">
+      <body className="antialiased">
+        <Toaster />
+        <div className="flex min-h-screen">
+          <div className="w-[15%] h-screen">
             <Sidebar />
           </div>
-          <div className=" w-full">
+
+          <div className="w-full flex flex-col h-screen">
             <Navabar />
-            <div className=" p-4">{children}</div>
+            <div className="flex-1 overflow-auto p-4">{children}</div>
           </div>
         </div>
       </body>

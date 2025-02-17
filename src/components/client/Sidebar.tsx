@@ -32,7 +32,7 @@ const Sidebar = () => {
   const pathname = usePathname();
 
   return (
-    <div className="w-full h-screen bg-card border-r flex flex-col bg-gray-900 ">
+    <div className="w-full h-screen bg-card border-r flex flex-col bg-gray-700 ">
       {/* Logo Section */}
       <div className="p-6 border-b">
         <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
@@ -50,7 +50,7 @@ const Sidebar = () => {
               className={cn(
                 "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors",
                 "hover:bg-accent hover:text-accent-foreground",
-                pathname === item.link
+                pathname.includes (item.link)
                   ? "bg-white text-black"
                   : "text-muted-foreground"
               )}
